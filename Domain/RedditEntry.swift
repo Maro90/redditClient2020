@@ -13,7 +13,7 @@ struct RedditEntry {
     let title: String
     let author: String
     let date: Date
-    let thumbnailURL: String
+    let thumbnailURL: String?
     let numberOfComments: Int64
     let unreadStatus: Bool = false
 
