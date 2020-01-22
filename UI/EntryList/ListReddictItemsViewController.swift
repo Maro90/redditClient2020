@@ -8,9 +8,8 @@
 
 import UIKit
 
-class ListReddictItemsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ListReddictItemsViewController: UITableViewController {
     
-    @IBOutlet var tableView: UITableView!
     let repository: RedditTopRepository = RedditTopNativeRepository()
     var redditList = [RedditEntry]()
 
@@ -18,47 +17,39 @@ class ListReddictItemsViewController: UIViewController, UITableViewDelegate, UIT
         super.viewDidLoad()
         // Do any additional setup after loading the view.
                 
-        self.tableView.addSubview(self.refreshControl)
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.estimatedRowHeight = 60
         self.tableView.register(UINib(nibName: "RedditCell", bundle: nil), forCellReuseIdentifier: "redditCell")
 
-        self.refreshData(nil)
-
+        refreshData(self.refreshControl)
     }
-    
-    lazy var refreshControl: UIRefreshControl = {
-        let refreshControl = UIRefreshControl()
-//        refreshControl.addTarget(self, action: #selector(ListReddictItemsViewController.refreshData(_:)), for: UIControlEvents.valueChanged)
-        
-        return refreshControl
-    }()
     
     //------------------Refresh Data ----------------------------------//
+    @IBAction func refreshData(_ sender: UIRefreshControl?) {
+            sender?.beginRefreshing()
 
-    func refreshData(_ refreshControl: UIRefreshControl?) {
-        self.refreshControl.beginRefreshing()
-
-        repository.getRedditTopList { (data) in
-            self.redditList = data
-            self.tableView.reloadData()
-            self.refreshControl.endRefreshing()
-        }
+            repository.getRedditTopList { [weak self] (data) in
+                self?.redditList = data
+                
+                DispatchQueue.main.async {
+                    self?.tableView.reloadData()
+                    self?.refreshControl?.endRefreshing()
+                }
+            }
     }
 
-    
     //--------------TableViewDataSource Protocol----------------------//
     
-    public func numberOfSections(in tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
     
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int{
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int{
         return redditList.count
     }
     
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell{
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell{
         let cell = tableView.dequeueReusableCell(withIdentifier: "redditCell", for: indexPath) as! RedditCell
         
         // Configure the cell...
