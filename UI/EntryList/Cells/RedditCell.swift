@@ -26,10 +26,21 @@ class RedditCell: UITableViewCell {
         self.titleLabel.text = data.title
         self.authorLabel.text = data.author
 
-//        if let thumbnail = data.thumbnailURL{
-//            self.imageThumbnail.imageURL(thumbnail, placeholder: #imageLiteral(resourceName: "reddit"))
-//        }
-        
+        if let image = data.thumbnailURL {
+            let url = URL(string: image)
+            URLSession.shared.dataTask(with: url!, completionHandler: { (data, response, error) in
+                
+                if error != nil {
+                    print(error!)
+                    return
+                }
+
+                DispatchQueue.main.async {
+                    self.imageThumbnail.image = UIImage(data: data!)
+                }
+            }).resume()
+        }
+                
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm"
         let stringDate = formatter.string(from: data.date)
