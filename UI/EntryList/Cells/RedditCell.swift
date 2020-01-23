@@ -31,7 +31,7 @@ class RedditCell: UITableViewCell {
             URLSession.shared.dataTask(with: url!, completionHandler: { (data, response, error) in
                 
                 if error != nil {
-                    print(error!)
+//                    print(error!)
                     return
                 }
 

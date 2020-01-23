@@ -8,7 +8,14 @@
 
 import UIKit
 
+protocol EntrySelectionDelegate: UIViewController {
+  func entrySelected(_ entry: RedditEntry)
+}
+
 class ListSplitViewController: UISplitViewController, UISplitViewControllerDelegate {
+    
+    var viewModel: ListViewModelDelegate = ListViewModel()
+    var detailViewController: EntrySelectionDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,5 +29,14 @@ class ListSplitViewController: UISplitViewController, UISplitViewControllerDeleg
              onto primaryViewController: UIViewController) -> Bool {
         // Return true to prevent UIKit from applying its default behavior
         return true
+    }
+    
+    func presentDetailViewController() {
+        guard let detailPageViewController = detailViewController,
+            let entry = viewModel.getSelectedEntry() else {
+                return
+        }
+        detailPageViewController.entrySelected(entry)
+        self.showDetailViewController(detailPageViewController, sender: nil)
     }
 }

@@ -10,8 +10,7 @@ import UIKit
 
 class ListReddictItemsViewController: UITableViewController {
     
-    let repository: RedditTopRepository = RedditTopNativeRepository()
-    var redditList = [RedditEntry]()
+    var viewModel: ListViewModelDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,16 +25,13 @@ class ListReddictItemsViewController: UITableViewController {
     
     //------------------Refresh Data ----------------------------------//
     @IBAction func refreshData(_ sender: UIRefreshControl?) {
-            sender?.beginRefreshing()
-
-            repository.getRedditTopList { [weak self] (data) in
-                self?.redditList = data
-                
-                DispatchQueue.main.async {
-                    self?.tableView.reloadData()
-                    self?.refreshControl?.endRefreshing()
-                }
+        sender?.beginRefreshing()
+        viewModel?.reloadEntries(completation: {
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+                self.refreshControl?.endRefreshing()
             }
+        })
     }
 
     //--------------TableViewDataSource Protocol----------------------//
@@ -44,19 +40,28 @@ class ListReddictItemsViewController: UITableViewController {
         return 1
     }
     
-    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int{
-        return redditList.count
+        return viewModel?.getEntriesCount() ?? 0
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell{
         let cell = tableView.dequeueReusableCell(withIdentifier: "redditCell", for: indexPath) as! RedditCell
         
-        // Configure the cell...
-        cell.loadData(self.redditList[indexPath.row])
+        if let entry = viewModel?.getEntryFor(index: indexPath.row) {
+            cell.loadData(entry)
+        }
         
         return cell
     }
 
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        if let entry = viewModel?.getEntryFor(index: indexPath.row),
+            let splitController = splitViewController as? ListSplitViewController {
+            
+            viewModel?.selectEntry(entry: entry)
+            splitController.presentDetailViewController()
+        }
+    }
 }
 
