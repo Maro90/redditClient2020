@@ -12,6 +12,7 @@ class DetailPageViewController: UIViewController {
 
     @IBOutlet var titleLabel:       UILabel!
     @IBOutlet var imageThumbnail:   UIImageView!
+    @IBOutlet var subredditLabel:   UILabel!
 
     var entrySelected: RedditEntry?
     
@@ -28,6 +29,7 @@ class DetailPageViewController: UIViewController {
     
     func loadData(_ data: RedditEntry){
         self.titleLabel.text = data.title
+        self.subredditLabel.text = data.subredditText
 
         if let image = data.thumbnailURL {
             let url = URL(string: image)

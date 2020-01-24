@@ -12,10 +12,11 @@ struct RedditEntry {
     
     let title: String
     let author: String
-    let date: Date
+    let date: TimeInterval
     let thumbnailURL: String?
     let numberOfComments: Int64
     let unreadStatus: Bool = false
+    let subredditText: String
 
     enum CodingKeys: String, CodingKey {
         case data
@@ -28,6 +29,7 @@ struct RedditEntry {
         case thumbnailURL = "thumbnail"
         case numberOfComments = "num_comments"
         case unreadStatus
+        case subredditText = "subreddit"
     }
 }
 
@@ -40,8 +42,9 @@ extension RedditEntry: Decodable {
 
         title = try data.decode(String.self, forKey: .title)
         author = try data.decode(String.self, forKey: .author)
-        date = try data.decode(Date.self, forKey: .date)
+        date = try data.decode(TimeInterval.self, forKey: .date)
         thumbnailURL = try data.decode(String.self, forKey: .thumbnailURL)
         numberOfComments = try data.decode(Int64.self, forKey: .numberOfComments)
+        subredditText = try data.decode(String.self, forKey: .subredditText)
     }
 }
