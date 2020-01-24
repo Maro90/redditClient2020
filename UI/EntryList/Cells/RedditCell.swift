@@ -40,11 +40,8 @@ class RedditCell: UITableViewCell {
                 }
             }).resume()
         }
-                
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm"
-        let stringDate = formatter.string(from: data.date)
 
+        let stringDate = Date(timeIntervalSince1970: data.date).timeAgo()
         
         self.dateLabel.text = "\(stringDate)"
         
