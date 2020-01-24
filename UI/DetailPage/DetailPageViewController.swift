@@ -58,5 +58,8 @@ class DetailPageViewController: UIViewController {
 extension DetailPageViewController: EntrySelectionDelegate {
     func entrySelected(_ entry: RedditEntry){
         entrySelected = entry
+        DispatchQueue.main.async {
+            self.loadData(entry)
+        }
     }
 }
