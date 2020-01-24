@@ -15,6 +15,7 @@ protocol ListViewModelDelegate {
     func getEntries() -> [RedditEntry]
     func getEntryFor(index: Int) -> RedditEntry?
     func getEntriesCount() -> Int
+    func removeEntry(index: Int)
 }
 
 class ListViewModel: ListViewModelDelegate {
@@ -54,5 +55,9 @@ class ListViewModel: ListViewModelDelegate {
     
     func getEntriesCount() -> Int {
         return redditList.count
+    }
+    
+    func removeEntry(index: Int) {
+        redditList.remove(at: index)
     }
 }
