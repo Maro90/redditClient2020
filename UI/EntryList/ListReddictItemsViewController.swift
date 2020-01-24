@@ -63,5 +63,12 @@ class ListReddictItemsViewController: UITableViewController {
             splitController.presentDetailViewController()
         }
     }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+     if editingStyle == .delete {
+        viewModel?.removeEntry(index: indexPath.row)
+        tableView.deleteRows(at: [indexPath], with: .fade)
+     }
+    }
 }
 
